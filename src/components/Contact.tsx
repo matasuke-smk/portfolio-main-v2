@@ -138,6 +138,11 @@ export default function Contact() {
             </button>
           </form>
         </div>
+        
+        <div className="contact-footer">
+          <p>お急ぎの場合は、SNSのDMでもお気軽にお声がけください。<br />
+          個人情報の取扱いについては、プライバシーポリシーをご確認ください。</p>
+        </div>
       </div>
 
       <style jsx>{`
@@ -281,6 +286,21 @@ export default function Contact() {
           box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
 
+        .contact-footer {
+          margin-top: 3rem;
+          padding: 2rem;
+          text-align: center;
+          background: rgba(248, 249, 250, 0.8);
+          border-radius: 15px;
+        }
+
+        .contact-footer p {
+          color: #6c757d;
+          font-size: 0.9rem;
+          line-height: 1.6;
+          margin: 0;
+        }
+
         @media (max-width: 768px) {
           .contact {
             padding: 4rem 0;
@@ -300,6 +320,11 @@ export default function Contact() {
           }
 
           .contact-form {
+            padding: 1.5rem;
+          }
+
+          .contact-footer {
+            margin-top: 2rem;
             padding: 1.5rem;
           }
         }
