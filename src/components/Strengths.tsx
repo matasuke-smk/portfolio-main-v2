@@ -1,3 +1,5 @@
+'use client'
+
 export default function Strengths() {
   return (
     <section className="strengths">
