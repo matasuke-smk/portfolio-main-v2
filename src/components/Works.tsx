@@ -1,231 +1,192 @@
-'use client'
+'use client';
 
-export default function Works() {
-  const works = [
-    {
-      id: 1,
-      title: "コーポレートサイト制作",
-      client: "株式会社サンプル",
-      description: "企業の信頼性を高める洗練されたコーポレートサイトを制作。SEO対策により検索順位が大幅に向上。",
-      technologies: ["Next.js", "TypeScript", "Tailwind CSS"],
-      duration: "2週間",
-      result: "問い合わせ数が3倍に増加",
-      image: "/images/work1.jpg"
-    },
-    {
-      id: 2,
-      title: "ECサイト構築",
-      client: "オンラインショップ様",
-      description: "ユーザビリティを重視したECサイトの構築。決済システムの統合と在庫管理機能を実装。",
-      technologies: ["React", "Node.js", "Stripe API"],
-      duration: "3週間",
-      result: "売上が40%向上",
-      image: "/images/work2.jpg"
-    },
-    {
-      id: 3,
-      title: "ランディングページ最適化",
-      client: "マーケティング会社様",
-      description: "コンバージョン率向上を目的としたLP制作。A/Bテストによる継続的な改善も実施。",
-      technologies: ["Vue.js", "SCSS", "Google Analytics"],
-      duration: "1週間",
-      result: "CVRが250%改善",
-      image: "/images/work3.jpg"
-    }
-  ]
+import { motion } from 'framer-motion';
+import { ExternalLink, Github } from 'lucide-react';
+import { WORKS } from '@/lib/constants';
 
+const Works = () => {
   return (
-    <section id="works" className="works">
-      <div className="container">
-        <h2 className="section-title">Works</h2>
-        <p className="section-subtitle">これまでの制作実績をご紹介します</p>
-        
-        <div className="works-grid">
-          {works.map((work) => (
-            <div key={work.id} className="work-card">
-              <div className="work-image-placeholder">
-                <div className="work-overlay">
-                  <h3>{work.title}</h3>
-                  <p className="work-client">{work.client}</p>
-                </div>
-              </div>
-              
-              <div className="work-content">
-                <p className="work-description">{work.description}</p>
-                
-                <div className="work-details">
-                  <div className="work-info">
-                    <span className="work-label">制作期間:</span>
-                    <span>{work.duration}</span>
+    <section
+      id="works"
+      className="section-spacing"
+      style={{ backgroundColor: 'var(--color-gray-light)' }}
+    >
+      <div className="container-section">
+        {/* セクションヘッダー */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="text-center content-spacing"
+        >
+          <h2 className="font-accent font-bold text-4xl lg:text-5xl heading-spacing-medium" style={{ color: 'var(--color-black)' }}>
+            WORKS
+          </h2>
+          <p className="text-lg section-description" style={{ color: 'var(--color-gray-dark)' }}>
+            これまでに手がけた制作実績をご紹介します。<br />
+            様々な業種・規模のプロジェクトに対応しております。
+          </p>
+        </motion.div>
+
+        {/* 作品グリッド */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {WORKS.map((work, index) => (
+            <motion.div
+              key={work.id}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className="group"
+            >
+              <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
+                {/* 画像エリア */}
+                <div className="relative h-64 overflow-hidden">
+                  {/* プレースホルダー画像 */}
+                  <div 
+                    className="w-full h-full transition-transform duration-500 group-hover:scale-110"
+                    style={{
+                      background: `linear-gradient(135deg, var(--color-accent) 0%, rgba(0, 191, 255, 0.7) 100%)`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <div className="text-white text-center">
+                      <h3 className="font-accent font-bold text-xl mb-2">{work.title}</h3>
+                      <p className="text-sm opacity-90">{work.category}</p>
+                    </div>
                   </div>
-                  <div className="work-info">
-                    <span className="work-label">成果:</span>
-                    <span className="work-result">{work.result}</span>
-                  </div>
+
+                  {/* ホバーオーバーレイ */}
+                  <motion.div
+                    className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%)',
+                    }}
+                  >
+                    <div className="text-center text-white px-6">
+                      <p className="text-sm mb-4 leading-relaxed">{work.description}</p>
+                      <div className="flex flex-wrap gap-2 justify-center mb-4">
+                        {work.technologies.map((tech, techIndex) => (
+                          <span
+                            key={techIndex}
+                            className="px-3 py-1 text-xs rounded-full font-medium"
+                            style={{ 
+                              backgroundColor: 'rgba(0, 191, 255, 0.2)',
+                              border: '1px solid rgba(0, 191, 255, 0.3)'
+                            }}
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex gap-3 justify-center">
+                        <motion.button
+                          className="p-2 rounded-full transition-colors duration-300"
+                          style={{ 
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            backdropFilter: 'blur(10px)'
+                          }}
+                          whileHover={{ 
+                            scale: 1.1,
+                            backgroundColor: 'var(--color-accent)'
+                          }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <ExternalLink size={16} />
+                        </motion.button>
+                        <motion.button
+                          className="p-2 rounded-full transition-colors duration-300"
+                          style={{ 
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            backdropFilter: 'blur(10px)'
+                          }}
+                          whileHover={{ 
+                            scale: 1.1,
+                            backgroundColor: 'var(--color-accent)'
+                          }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Github size={16} />
+                        </motion.button>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* デモバッジ */}
+                  {work.isDemo && (
+                    <div className="absolute top-4 right-4">
+                      <span 
+                        className="px-3 py-1 text-xs font-semibold rounded-full text-white"
+                        style={{ backgroundColor: 'rgba(255, 0, 0, 0.8)' }}
+                      >
+                        DEMO
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                <div className="work-technologies">
-                  {work.technologies.map((tech, index) => (
-                    <span key={index} className="tech-badge">{tech}</span>
-                  ))}
+                {/* コンテンツエリア */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span 
+                      className="text-sm font-semibold tracking-wider uppercase"
+                      style={{ color: 'var(--color-accent)' }}
+                    >
+                      {work.category}
+                    </span>
+                    <span className="text-sm" style={{ color: 'var(--color-gray)' }}>
+                      {work.duration}
+                    </span>
+                  </div>
+                  
+                  <h3 className="font-accent font-bold text-xl mb-3" style={{ color: 'var(--color-black)' }}>
+                    {work.title}
+                  </h3>
+                  
+                  <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--color-gray-dark)' }}>
+                    {work.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {work.technologies.map((tech, techIndex) => (
+                      <span
+                        key={techIndex}
+                        className="px-3 py-1 text-xs rounded-full font-medium transition-colors duration-300"
+                        style={{ 
+                          backgroundColor: 'rgba(0, 191, 255, 0.1)',
+                          color: 'var(--color-accent)',
+                          border: '1px solid rgba(0, 191, 255, 0.2)'
+                        }}
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* 追加情報 */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="text-center mt-16"
+        >
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--color-gray-dark)' }}>
+            ※ 上記の制作実績は、技術力とデザイン力を示すためのデモ作品です。<br />
+            実際のクライアントワークでは、守秘義務により一部の作品のみ公開しております。
+          </p>
+        </motion.div>
       </div>
-
-      <style jsx>{`
-        .works {
-          padding: 6rem 0;
-          background: rgba(255, 255, 255, 0.8);
-        }
-
-        .container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 2rem;
-        }
-
-        .section-title {
-          text-align: center;
-          font-size: 3rem;
-          color: #2c3e50;
-          margin-bottom: 1rem;
-          position: relative;
-        }
-
-        .section-title::after {
-          content: '';
-          position: absolute;
-          bottom: -10px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 80px;
-          height: 4px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 2px;
-        }
-
-        .section-subtitle {
-          text-align: center;
-          color: #7f8c8d;
-          font-size: 1.2rem;
-          margin-bottom: 4rem;
-        }
-
-        .works-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 3rem;
-        }
-
-        .work-card {
-          background: white;
-          border-radius: 15px;
-          overflow: hidden;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-          transition: all 0.3s ease;
-          border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .work-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .work-image-placeholder {
-          height: 200px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .work-overlay {
-          text-align: center;
-          color: white;
-        }
-
-        .work-overlay h3 {
-          font-size: 1.5rem;
-          margin-bottom: 0.5rem;
-        }
-
-        .work-client {
-          opacity: 0.9;
-          font-size: 1rem;
-        }
-
-        .work-content {
-          padding: 2rem;
-        }
-
-        .work-description {
-          color: #5a6c7d;
-          margin-bottom: 1.5rem;
-          line-height: 1.6;
-        }
-
-        .work-details {
-          margin-bottom: 1.5rem;
-        }
-
-        .work-info {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 0.5rem;
-        }
-
-        .work-label {
-          font-weight: 600;
-          color: #2c3e50;
-        }
-
-        .work-result {
-          color: #e74c3c;
-          font-weight: 600;
-        }
-
-        .work-technologies {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-        }
-
-        .tech-badge {
-          background: #ecf0f1;
-          color: #2c3e50;
-          padding: 0.3rem 0.8rem;
-          border-radius: 20px;
-          font-size: 0.8rem;
-          font-weight: 500;
-        }
-
-        @media (max-width: 768px) {
-          .works {
-            padding: 4rem 0;
-          }
-
-          .container {
-            padding: 0 1rem;
-          }
-
-          .section-title {
-            font-size: 2rem;
-          }
-
-          .works-grid {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-          }
-
-          .work-content {
-            padding: 1.5rem;
-          }
-        }
-      `}</style>
     </section>
-  )
-}
+  );
+};
+
+export default Works;

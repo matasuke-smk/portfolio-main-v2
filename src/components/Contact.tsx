@@ -1,334 +1,348 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Mail, Send, User, Building, Phone, MessageSquare } from 'lucide-react';
+import { CONTACT_TYPES } from '@/lib/constants';
 
-export default function Contact() {
+const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     company: '',
-    budget: '',
-    message: ''
-  })
+    email: '',
+    phone: '',
+    type: '',
+    message: '',
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // フォーム送信処理（実際の実装では適切なバックエンドに送信）
-    console.log('Form submitted:', formData)
-    alert('お問い合わせありがとうございます！48時間以内にご返信いたします。')
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // 実際のプロジェクトでは、ここでEmailJSやAPIを使用してメール送信を行います
+    try {
+      // シミュレーション用の遅延
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      console.log('Form submitted:', formData);
+      setSubmitStatus('success');
+      setFormData({
+        name: '',
+        company: '',
+        email: '',
+        phone: '',
+        type: '',
+        message: '',
+      });
+    } catch (error) {
+      console.error('Submit error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    }
+  };
 
   return (
-    <section id="contact" className="contact">
-      <div className="container">
-        <h2 className="section-title">Contact</h2>
-        <p className="section-subtitle">お気軽にお問い合わせください</p>
-        
-        <div className="contact-content">
-          <div className="contact-info">
-            <h3>まずはお話をお聞かせください</h3>
-            <p>
-              プロジェクトの規模や予算に関わらず、<br />
-              どんなご相談でもお気軽にどうぞ。<br />
-              初回ご相談は無料で承っております。
-            </p>
-            
-            <div className="contact-details">
-              <div className="contact-item">
-                <div className="contact-icon">📧</div>
-                <div>
-                  <strong>メール</strong><br />
-                  contact@matasuke.dev
-                </div>
-              </div>
-              
-              <div className="contact-item">
-                <div className="contact-icon">💬</div>
-                <div>
-                  <strong>レスポンス時間</strong><br />
-                  平均48時間以内にご返信
-                </div>
-              </div>
-              
-              <div className="contact-item">
-                <div className="contact-icon">🎯</div>
-                <div>
-                  <strong>対応エリア</strong><br />
-                  全国（リモート対応）
-                </div>
-              </div>
-            </div>
-          </div>
+    <section
+      id="contact"
+      className="section-spacing bg-gray-50"
+    >
+      <div className="container-section max-w-4xl">
+        {/* セクションヘッダー */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="text-center content-spacing"
+        >
+          <h2 className="font-accent font-bold text-4xl lg:text-5xl text-gray-900 heading-spacing-medium">
+            CONTACT
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto section-description">
+            プロジェクトのご相談やお見積もりなど、<br />
+            お気軽にお問い合わせください。24時間以内にご返信いたします。
+          </p>
+        </motion.div>
+
+        {/* お問い合わせフォーム */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="bg-white rounded-2xl shadow-xl border border-gray-100 relative overflow-hidden" style={{ padding: '3rem' }}
+        >
+          {/* 背景装飾 */}
+          <motion.div
+            className="absolute top-0 right-0 w-32 h-32 opacity-3"
+            style={{ backgroundColor: 'var(--color-accent)' }}
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          />
           
-          <form className="contact-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">お名前 *</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+          <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* お名前 */}
+              <div className="form-field-spacing">
+                <label htmlFor="name" className="flex items-center space-x-3 text-base font-semibold text-gray-800 form-label-spacing">
+                  <motion.div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: 'rgba(0, 191, 255, 0.1)' }}
+                    whileHover={{ scale: 1.1, backgroundColor: 'rgba(0, 191, 255, 0.2)' }}
+                  >
+                    <User size={16} className="text-accent" />
+                  </motion.div>
+                  <span>お名前 <span className="text-red-500">*</span></span>
+                </label>
+                <motion.input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 text-base"
+                  placeholder="山田太郎"
+                  whileFocus={{ scale: 1.02 }}
+                />
+              </div>
+
+              {/* 会社名 */}
+              <div className="form-field-spacing">
+                <label htmlFor="company" className="flex items-center space-x-3 text-base font-semibold text-gray-800 form-label-spacing">
+                  <motion.div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: 'rgba(0, 191, 255, 0.1)' }}
+                    whileHover={{ scale: 1.1, backgroundColor: 'rgba(0, 191, 255, 0.2)' }}
+                  >
+                    <Building size={16} className="text-accent" />
+                  </motion.div>
+                  <span>会社名</span>
+                </label>
+                <motion.input
+                  type="text"
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 text-base"
+                  placeholder="株式会社サンプル"
+                  whileFocus={{ scale: 1.02 }}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* メールアドレス */}
+              <div className="form-field-spacing">
+                <label htmlFor="email" className="flex items-center space-x-3 text-base font-semibold text-gray-800 form-label-spacing">
+                  <motion.div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: 'rgba(0, 191, 255, 0.1)' }}
+                    whileHover={{ scale: 1.1, backgroundColor: 'rgba(0, 191, 255, 0.2)' }}
+                  >
+                    <Mail size={16} className="text-accent" />
+                  </motion.div>
+                  <span>メールアドレス <span className="text-red-500">*</span></span>
+                </label>
+                <motion.input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 text-base"
+                  placeholder="example@email.com"
+                  whileFocus={{ scale: 1.02 }}
+                />
+              </div>
+
+              {/* 電話番号 */}
+              <div className="form-field-spacing">
+                <label htmlFor="phone" className="flex items-center space-x-3 text-base font-semibold text-gray-800 form-label-spacing">
+                  <motion.div
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: 'rgba(0, 191, 255, 0.1)' }}
+                    whileHover={{ scale: 1.1, backgroundColor: 'rgba(0, 191, 255, 0.2)' }}
+                  >
+                    <Phone size={16} className="text-accent" />
+                  </motion.div>
+                  <span>電話番号</span>
+                </label>
+                <motion.input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 text-base"
+                  placeholder="090-1234-5678"
+                  whileFocus={{ scale: 1.02 }}
+                />
+              </div>
+            </div>
+
+            {/* お問い合わせ種別 */}
+            <div className="form-field-spacing">
+              <label htmlFor="type" className="flex items-center space-x-3 text-base font-semibold text-gray-800 form-label-spacing">
+                <motion.div
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: 'rgba(0, 191, 255, 0.1)' }}
+                  whileHover={{ scale: 1.1, backgroundColor: 'rgba(0, 191, 255, 0.2)' }}
+                >
+                  <MessageSquare size={16} className="text-accent" />
+                </motion.div>
+                <span>お問い合わせ種別 <span className="text-red-500">*</span></span>
+              </label>
+              <motion.select
+                id="type"
+                name="type"
+                value={formData.type}
                 onChange={handleChange}
                 required
-              />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="email">メールアドレス *</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="company">会社名・団体名</label>
-              <input
-                type="text"
-                id="company"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-              />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="budget">ご予算</label>
-              <select
-                id="budget"
-                name="budget"
-                value={formData.budget}
-                onChange={handleChange}
+                className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 text-base bg-white"
+                whileFocus={{ scale: 1.02 }}
               >
                 <option value="">選択してください</option>
-                <option value="~50万円">〜50万円</option>
-                <option value="50万円~100万円">50万円〜100万円</option>
-                <option value="100万円~200万円">100万円〜200万円</option>
-                <option value="200万円~">200万円〜</option>
-                <option value="相談したい">相談したい</option>
-              </select>
+                {CONTACT_TYPES.map((type, index) => (
+                  <option key={index} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </motion.select>
             </div>
-            
-            <div className="form-group">
-              <label htmlFor="message">プロジェクトの詳細 *</label>
-              <textarea
+
+            {/* お問い合わせ内容 */}
+            <div className="form-field-spacing">
+              <label htmlFor="message" className="flex items-center space-x-3 text-base font-semibold text-gray-800 form-label-spacing">
+                <motion.div
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: 'rgba(0, 191, 255, 0.1)' }}
+                  whileHover={{ scale: 1.1, backgroundColor: 'rgba(0, 191, 255, 0.2)' }}
+                >
+                  <MessageSquare size={16} className="text-accent" />
+                </motion.div>
+                <span>お問い合わせ内容 <span className="text-red-500">*</span></span>
+              </label>
+              <motion.textarea
                 id="message"
                 name="message"
-                rows={6}
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="どのようなサイトを作りたいか、現在の課題、期待する成果などをお聞かせください"
                 required
-              ></textarea>
+                rows={8}
+                className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 resize-vertical text-base"
+                placeholder="プロジェクトの詳細、ご予算、ご希望の納期などをお聞かせください。"
+                whileFocus={{ scale: 1.01 }}
+              />
             </div>
-            
-            <button type="submit" className="submit-btn">
-              お問い合わせを送信
-            </button>
+
+            {/* 送信ボタン */}
+            <div className="text-center pt-8">
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                className={`inline-flex items-center space-x-3 px-12 py-5 rounded-xl font-accent font-bold text-base tracking-wider uppercase transition-all duration-300 relative overflow-hidden ${
+                  isSubmitting
+                    ? 'bg-gray-400 text-white cursor-not-allowed'
+                    : submitStatus === 'success'
+                    ? 'bg-green-600 text-white shadow-lg shadow-green-600/25'
+                    : submitStatus === 'error'
+                    ? 'bg-red-600 text-white shadow-lg shadow-red-600/25'
+                    : 'text-white shadow-xl hover:shadow-2xl'
+                }`}
+                style={
+                  !isSubmitting && submitStatus === 'idle'
+                    ? {
+                        background: 'linear-gradient(135deg, var(--color-accent) 0%, rgba(0, 191, 255, 0.8) 100%)'
+                      }
+                    : {}
+                }
+                whileHover={!isSubmitting ? { scale: 1.05, y: -2 } : {}}
+                whileTap={!isSubmitting ? { scale: 0.95 } : {}}
+              >
+                {/* 背景エフェクト */}
+                {!isSubmitting && submitStatus === 'idle' && (
+                  <motion.div
+                    className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(0, 191, 255, 0.9) 0%, var(--color-accent) 100%)'
+                    }}
+                  />
+                )}
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span className="relative z-10">送信中...</span>
+                  </>
+                ) : submitStatus === 'success' ? (
+                  <span className="relative z-10">送信完了</span>
+                ) : submitStatus === 'error' ? (
+                  <span className="relative z-10">送信エラー</span>
+                ) : (
+                  <>
+                    <motion.div
+                      className="relative z-10"
+                      animate={{ rotate: [0, 15, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <Send size={18} />
+                    </motion.div>
+                    <span className="relative z-10">送信する</span>
+                  </>
+                )}
+              </motion.button>
+            </div>
+
+            {/* ステータスメッセージ */}
+            {submitStatus === 'success' && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center text-green-600 text-sm"
+              >
+                お問い合わせありがとうございます。24時間以内にご返信いたします。
+              </motion.div>
+            )}
+            {submitStatus === 'error' && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center text-red-600 text-sm"
+              >
+                送信に失敗しました。お手数ですが、再度お試しください。
+              </motion.div>
+            )}
           </form>
-        </div>
-        
-        <div className="contact-footer">
-          <p>お急ぎの場合は、SNSのDMでもお気軽にお声がけください。<br />
-          個人情報の取扱いについては、プライバシーポリシーをご確認ください。</p>
-        </div>
+        </motion.div>
+
+        {/* 追加情報 */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-20 lg:mt-32 text-center"
+        >
+          <p className="text-sm text-gray-500 leading-relaxed">
+            お急ぎの場合は、SNSのDMでもお気軽にお声がけください。<br />
+            個人情報の取扱いについては、プライバシーポリシーをご確認ください。
+          </p>
+        </motion.div>
       </div>
-
-      <style jsx>{`
-        .contact {
-          padding: 6rem 0;
-          background: rgba(255, 255, 255, 0.9);
-        }
-
-        .container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 2rem;
-        }
-
-        .section-title {
-          text-align: center;
-          font-size: 3rem;
-          color: #2c3e50;
-          margin-bottom: 1rem;
-          position: relative;
-        }
-
-        .section-title::after {
-          content: '';
-          position: absolute;
-          bottom: -10px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 80px;
-          height: 4px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 2px;
-        }
-
-        .section-subtitle {
-          text-align: center;
-          color: #7f8c8d;
-          font-size: 1.2rem;
-          margin-bottom: 4rem;
-        }
-
-        .contact-content {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 4rem;
-          align-items: start;
-        }
-
-        .contact-info h3 {
-          color: #2c3e50;
-          font-size: 1.5rem;
-          margin-bottom: 1rem;
-        }
-
-        .contact-info p {
-          color: #5a6c7d;
-          line-height: 1.8;
-          margin-bottom: 2rem;
-        }
-
-        .contact-details {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
-
-        .contact-item {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .contact-icon {
-          font-size: 1.5rem;
-          width: 50px;
-          height: 50px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .contact-form {
-          background: white;
-          padding: 2rem;
-          border-radius: 15px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-          margin-bottom: 1.5rem;
-        }
-
-        label {
-          display: block;
-          color: #2c3e50;
-          font-weight: 600;
-          margin-bottom: 0.5rem;
-        }
-
-        input,
-        select,
-        textarea {
-          width: 100%;
-          padding: 0.8rem;
-          border: 2px solid #ecf0f1;
-          border-radius: 8px;
-          font-size: 1rem;
-          font-family: inherit;
-          transition: border-color 0.3s;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-          outline: none;
-          border-color: #3498db;
-        }
-
-        textarea {
-          resize: vertical;
-          min-height: 120px;
-        }
-
-        .submit-btn {
-          width: 100%;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          border: none;
-          padding: 1rem 2rem;
-          border-radius: 8px;
-          font-size: 1.1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .submit-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .contact-footer {
-          margin-top: 3rem;
-          padding: 2rem;
-          text-align: center;
-          background: rgba(248, 249, 250, 0.8);
-          border-radius: 15px;
-        }
-
-        .contact-footer p {
-          color: #6c757d;
-          font-size: 0.9rem;
-          line-height: 1.6;
-          margin: 0;
-        }
-
-        @media (max-width: 768px) {
-          .contact {
-            padding: 4rem 0;
-          }
-
-          .container {
-            padding: 0 1rem;
-          }
-
-          .section-title {
-            font-size: 2rem;
-          }
-
-          .contact-content {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-          }
-
-          .contact-form {
-            padding: 1.5rem;
-          }
-
-          .contact-footer {
-            margin-top: 2rem;
-            padding: 1.5rem;
-          }
-        }
-      `}</style>
     </section>
-  )
-}
+  );
+};
+
+export default Contact;
