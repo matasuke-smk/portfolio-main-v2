@@ -1,158 +1,201 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
+import { NAVIGATION, SITE_CONFIG } from '@/lib/constants';
 
-export default function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleNavClick = (href: string) => {
+    setIsMobileMenuOpen(false);
+    
+    if (href.startsWith('#')) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
+    }
+  };
 
   return (
-    <nav className="nav">
-      <div className="nav-container">
-        <div className="nav-brand">
-          <h1>MATASUKE</h1>
-          <p className="nav-subtitle">Web Developer</p>
-        </div>
-        
-        <button 
-          className="nav-toggle"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="メニューを開く"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+    <header
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      style={{ 
+        backgroundColor: isScrolled ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
+        backdropFilter: isScrolled ? 'blur(10px)' : 'none',
+        borderBottom: isScrolled ? '1px solid var(--color-gray-light)' : 'none'
+      }}
+    >
+      <div className="container-section" style={{ maxWidth: '1200px' }}>
+        <div className="flex items-center justify-between px-4" style={{ height: '6rem' }}>
+          {/* ロゴ */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <a
+              href="#home"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('#home');
+              }}
+              className="font-accent font-bold text-xl lg:text-2xl transition-colors duration-300 hover:opacity-80"
+              style={{ color: 'var(--color-black)' }}
+            >
+              {SITE_CONFIG.name}
+            </a>
+          </motion.div>
 
-        <ul className={`nav-menu ${isMenuOpen ? 'nav-menu-active' : ''}`}>
-          <li><a href="#about" onClick={() => setIsMenuOpen(false)}>About</a></li>
-          <li><a href="#skills" onClick={() => setIsMenuOpen(false)}>Skills</a></li>
-          <li><a href="#works" onClick={() => setIsMenuOpen(false)}>Works</a></li>
-          <li><a href="#service" onClick={() => setIsMenuOpen(false)}>Service</a></li>
-          <li><a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a></li>
-        </ul>
+          {/* デスクトップナビゲーション */}
+          <nav className="hidden lg:flex items-center">
+            <div className="flex items-center" style={{ gap: '1.5rem' }}>
+              {NAVIGATION.map((item, index) => (
+                <motion.a
+                  key={item.name}
+                  href={item.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(item.href);
+                  }}
+                  className="font-accent font-semibold tracking-wider transition-all duration-300 relative group hover:text-white rounded-full"
+                  style={{ 
+                    fontSize: '1rem',
+                    padding: '0.5rem 1rem',
+                    color: 'var(--color-gray-darker)',
+                    border: '2px solid transparent'
+                  }}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    backgroundColor: 'var(--color-accent)',
+                    borderColor: 'var(--color-accent)'
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {item.name}
+                  
+                  {/* グロー効果 */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                    style={{ 
+                      backgroundColor: 'var(--color-accent)',
+                      filter: 'blur(8px)',
+                      zIndex: -1
+                    }}
+                  />
+                </motion.a>
+              ))}
+            </div>
+          </nav>
+
+          {/* モバイルメニューボタン */}
+          <motion.button
+            className="lg:hidden p-2 transition-colors duration-300 hover:opacity-80"
+            style={{ color: 'var(--color-gray-dark)' }}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            aria-label="メニューを開く"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </motion.button>
+        </div>
       </div>
 
-      <style jsx>{`
-        .nav {
-          position: fixed;
-          top: 0;
-          width: 100%;
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(10px);
-          z-index: 1000;
-          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
+      {/* モバイルメニュー */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            {/* バックドロップ */}
+            <motion.div
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            
+            {/* メニューパネル */}
+            <motion.div
+              className="fixed top-20 left-4 right-4 bg-white rounded-2xl shadow-2xl z-50 lg:hidden border border-gray-100"
+              initial={{ opacity: 0, y: -20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              {/* メニューヘッダー */}
+              <div className="px-6 py-4 border-b border-gray-100">
+                <h3 className="font-accent font-bold text-lg" style={{ color: 'var(--color-gray-darker)' }}>
+                  Menu
+                </h3>
+              </div>
+              
+              <nav className="flex flex-col py-4">
+                {NAVIGATION.map((item, index) => (
+                  <motion.a
+                    key={item.name}
+                    href={item.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick(item.href);
+                    }}
+                    className="font-accent font-semibold text-base tracking-wider text-gray-700 hover:text-white hover:bg-accent mx-4 my-1 px-6 py-4 rounded-xl transition-all duration-300 relative overflow-hidden group"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {/* 背景グラデーション */}
+                    <motion.div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{
+                        background: 'linear-gradient(135deg, var(--color-accent) 0%, rgba(0, 191, 255, 0.8) 100%)'
+                      }}
+                    />
+                    
+                    <span className="relative z-10">{item.name}</span>
+                    
+                    {/* 装飾アイコン */}
+                    <motion.div
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{ backgroundColor: 'white' }}
+                      initial={{ x: -10, opacity: 0 }}
+                      whileHover={{ x: 0, opacity: 1 }}
+                    />
+                  </motion.a>
+                ))}
+              </nav>
+              
+              {/* メニューフッター */}
+              <div className="px-6 py-4 border-t border-gray-100 text-center">
+                <p className="text-xs text-gray-500">MATASUKE Portfolio</p>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+};
 
-        .nav-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 1rem 2rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .nav-brand h1 {
-          color: #2c3e50;
-          font-size: 1.5rem;
-          font-weight: bold;
-          margin: 0;
-        }
-
-        .nav-subtitle {
-          color: #7f8c8d;
-          font-size: 0.8rem;
-          margin: 0;
-        }
-
-        .nav-toggle {
-          display: none;
-          flex-direction: column;
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 0.5rem;
-        }
-
-        .nav-toggle span {
-          width: 25px;
-          height: 3px;
-          background: #2c3e50;
-          margin: 3px 0;
-          transition: 0.3s;
-          border-radius: 3px;
-        }
-
-        .nav-menu {
-          display: flex;
-          list-style: none;
-          gap: 2rem;
-          margin: 0;
-          padding: 0;
-        }
-
-        .nav-menu a {
-          text-decoration: none;
-          color: #2c3e50;
-          font-weight: 500;
-          transition: color 0.3s;
-          position: relative;
-        }
-
-        .nav-menu a:hover {
-          color: #3498db;
-        }
-
-        .nav-menu a::after {
-          content: '';
-          position: absolute;
-          width: 0;
-          height: 2px;
-          bottom: -5px;
-          left: 50%;
-          background: #3498db;
-          transition: all 0.3s;
-          transform: translateX(-50%);
-        }
-
-        .nav-menu a:hover::after {
-          width: 100%;
-        }
-
-        @media (max-width: 768px) {
-          .nav-container {
-            padding: 1rem;
-          }
-
-          .nav-toggle {
-            display: flex;
-          }
-
-          .nav-menu {
-            position: fixed;
-            left: -100%;
-            top: 70px;
-            flex-direction: column;
-            background: rgba(255, 255, 255, 0.98);
-            width: 100%;
-            text-align: center;
-            transition: 0.3s;
-            backdrop-filter: blur(10px);
-            padding: 2rem 0;
-            gap: 1rem;
-          }
-
-          .nav-menu-active {
-            left: 0;
-          }
-
-          .nav-menu a {
-            font-size: 1.1rem;
-            padding: 0.5rem 0;
-            display: block;
-          }
-        }
-      `}</style>
-    </nav>
-  )
-}
+export default Header;
